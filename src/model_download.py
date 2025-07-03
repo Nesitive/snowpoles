@@ -16,7 +16,7 @@ def main():
     if not args.output:
         args.output = config["paths"]["trainee_model"]
 
-    download_models()
+    download_models("/".join(args.output.split("/")[:-1]), args.output.split("/")[-1])
 
 def download_models(save_path="./models", save_name="CO_and_WA_model.pth", confirm=True, url="https://zenodo.org/records/12764696/files/CO_and_WA_model.pth"):
     # see the Zenodo page for the latest models
