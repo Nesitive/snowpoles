@@ -122,9 +122,9 @@ def main():
             else:
                 print("Invalid input.\n")
             quit()
-    train(args.output, args.device, args.model, args.lr, args.epochs)
+    train(args.output, args.device, args.model, args.lr, args.epochs, args.path, args.aug, args.batch_size)
 
-def train(output, device, model_arg, lr, epochs):
+def train(output, device, model_arg, lr, epochs, input_images, aug, batch_size):
     # Import all libraries
     import torch
     import torch.optim as optim
@@ -163,7 +163,7 @@ def train(output, device, model_arg, lr, epochs):
     optimizer = optim.Adam(model.parameters(), lr=lr)
     criterion = nn.SmoothL1Loss()
 
-    prepared_dataset = prepare_dataset("tests/data", True, 4, output)
+    prepared_dataset = prepare_dataset(input_images, aug, batch_size, output)
     train_loader = prepared_dataset["train_loader"]
     train_data = prepared_dataset["train_data"]
     valid_loader = prepared_dataset["valid_loader"]
