@@ -41,6 +41,12 @@ def main():
         "--lr", required=False, help="please let us know what this setting does; we've been afraid to try it"
     )
     parser.add_argument(
+        "--aug", required=False, help="AAAAAUG!"
+    )
+    parser.add_argument(
+        "--batch_size", required=False, help="number of images to train on at once"
+    )
+    parser.add_argument(
         "--no_confirm", required=False, help="skip confirmation", action="store_true"
     )
     args = parser.parse_args()
@@ -60,6 +66,10 @@ def main():
         args.epochs = config["training"]["epochs"]
     if not args.lr:
         args.lr = config["training"]["lr"]
+    if not args.aug:
+        args.lr = config["training"]["aug"]
+    if not args.batch_size:
+        args.lr = config["training"]["batch_size"]
 
     # Confirmation
     if not args.no_confirm:
