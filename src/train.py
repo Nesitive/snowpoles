@@ -67,9 +67,9 @@ def main():
     if not args.lr:
         args.lr = config["training"]["lr"]
     if not args.aug:
-        args.lr = config["training"]["aug"]
+        args.aug = config["training"]["aug"]
     if not args.batch_size:
-        args.lr = config["training"]["batch_size"]
+        args.batch_size = config["training"]["batch_size"]
 
     # Confirmation
     if not args.no_confirm:
@@ -189,7 +189,7 @@ def train(output, device, model_arg, lr, epochs, input_images, aug, batch_size):
     for epoch in range(epochs):
 
         print(f"Epoch {epoch+1} of {epochs}")
-        train_epoch_loss = fit(model, train_loader, train_data, device, optimizer, criterion)
+        train_epoch_loss = fit(model, train_loader, train_data, device, optimizer, criterion, batch_size)
         val_epoch_loss = validate(model, valid_loader, valid_data, epoch, device, output, criterion)
         train_loss.append(train_epoch_loss)
         val_loss.append(val_epoch_loss)
@@ -237,15 +237,14 @@ def train(output, device, model_arg, lr, epochs, input_images, aug, batch_size):
 
 
 # training function
-def fit(model, dataloader, data, device, optimizer, criterion):
+def fit(model, dataloader, data, device, optimizer, criterion, batch_size):
     import tqdm
-    print("Training")
     model.to(device)  ##
     model.train()
     train_running_loss = 0.0
     counter = 0
     # calculate the number of batches
-    num_batches = int(len(data)/dataloader.batch_size)
+    num_batches = int(len(data)/batch_size)
     for i, data in tqdm.tqdm(enumerate(dataloader), total=num_batches):
         counter += 1
         image, keypoints = data["image"].to(device), data["keypoints"].to(
