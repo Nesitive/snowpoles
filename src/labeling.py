@@ -43,8 +43,12 @@ def main():
     parser.add_argument(
         "--datapath", help="(deprecated) directory where images are located"
     )
-    parser.add_argument("--pole_length", help="length of pole in cm")
-    parser.add_argument("--subset_to_label", help="label every N images")
+    parser.add_argument(
+        "--pole_length", help="length of pole in cm"
+    )
+    parser.add_argument(
+        "--subset_to_label", help="label every N images"
+    )
     parser.add_argument(
         "--no_confirm", required=False, help="skip confirmation", action="store_true"
     )
@@ -66,8 +70,12 @@ def main():
         print(
             "\n\n# The following options were specified in config.toml or as arguments:\n"
         )
-        if args.path.startswith("/"):
-            print("Directory where images are located:\n" + str(args.path) + "\n")
+        if (args.path.startswith("/")):
+            print(
+                "Directory where images are located:\n"
+                + str(args.path)
+                + "\n"
+            )
         else:
             print(
                 "Directory where images are located:\n"
@@ -151,7 +159,7 @@ def label_photos(path, pole_length, subset_to_label):
         cameraID = Path(file).parent.name
         cameraIDs.append(cameraID)
 
-        ##whether to start counter over
+        # whether to start counter over
         i = i if len(cameraIDs) == 1 or cameraID == cameraIDs[-2] else 0
 
         if Path(file).name in filename:
@@ -203,11 +211,23 @@ def label_photos(path, pole_length, subset_to_label):
         i += 1
 
     ## simplified table for snow depth conversion later on
+    df = pd.DataFrame(
+        {
+            "filename": filename,
+            "datetime": creationTimes,
+            "x1": topX,
+            "y1": topY,
+            "x2": bottomX,
+            "y2": bottomY,
+            "PixelLengths": PixelLengths,
+        }
+    )
+
     metadata = pd.DataFrame(
         {
             "camera_id": pd.unique(cameraIDs),
+            "first_pole_length_px": first_pole_pixel_length,
             "pole_length_cm": pole_lengths,
-            "pole_length_px": first_pole_pixel_length,
             "pixel_cm_conversion": conversions,
             "width": widths,
             "height": heights,

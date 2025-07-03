@@ -85,8 +85,11 @@ def predict(model, path, device, output):  ##
             image = image / 255.0   
 
             # again reshape to add grayscale channel format
-            filename = file.split('/')[-1]
-            Camera = filename.split('/')[-1] ## assumes in a folder with camera name ('cam1', 'cam2', etc)
+            file_path = Path(file)
+            filename = file_path.name
+            Camera = file_path.stem.split('_')[0]
+            #filename = file.split('/')[-1]
+            #Camera = filename.split('/')[-1] ## assumes in a folder with camera name ('cam1', 'cam2', etc)
             
             ## add an empty dimension for sample size
             image = np.transpose(image, (2, 0, 1)) ## 
@@ -111,7 +114,7 @@ def predict(model, path, device, output):  ##
             pred_keypoint[1] = pred_keypoint[1] * (h / 224)
             pred_keypoint[3] = pred_keypoint[3] * (h /224)
 
-            vis_predicted_keypoints(filename, image, pred_keypoint, output) 
+            if i % 10 == 0: vis_predicted_keypoints(filename, image, pred_keypoint) 
             x1_pred, y1_pred, x2_pred, y2_pred = pred_keypoint[0], pred_keypoint[1], pred_keypoint[2], pred_keypoint[3]
             
             Cameras.append(Camera)

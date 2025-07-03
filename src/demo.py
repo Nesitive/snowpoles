@@ -95,9 +95,21 @@ def predict(model, device): ##
     total_length_pixels = []
     snow_depths = []
   
-    snowpolefiles = glob.glob(f"example_data/**/*")
-    ## full length of poles in cm
-    metadata = pd.read_csv(f"example_data/pole_metadata.csv")
+    # snowpolefiles = glob.glob(f"example_data/**/*")
+    # ## full length of poles in cm
+    # metadata = pd.read_csv(f"example_data/pole_metadata.csv")
+
+    # Define base path 
+    #IPython.embed()
+    root =  Path(os.getcwd())
+    base_path =  Path("example_data")
+    full_path = root.joinpath(base_path)
+
+    # Get all files recursively
+    snowpolefiles = list(full_path.rglob("*.jpg"))
+
+    # Read metadata
+    metadata = pd.read_csv(full_path / "pole_metadata.csv")
     
     with torch.no_grad():
         for i, file in tqdm(enumerate(snowpolefiles)):
