@@ -260,6 +260,7 @@ def validate(model, dataloader, data, epoch, device, output, criterion):
     import torch
     import tqdm
     import os
+    from utils import valid_keypoints_plot
     print("Validating")
     model.to(device)
     model.eval()

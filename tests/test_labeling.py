@@ -21,14 +21,19 @@ class LabelingTest(unittest.TestCase):
         copyfile("tests/data/test-labels.csv", "tests/data/labels.csv")
         copyfile("tests/data/test-pole_metadata.csv", "tests/data/pole_metadata.csv")
         labeling.label_photos("tests/data", 150, 6)
-        self.assertTrue(
-            filecmp.cmp("tests/data/labels.csv", "tests/data/test-labels.csv")
-        )
-        self.assertTrue(
-            filecmp.cmp(
-                "tests/data/pole_metadata.csv", "tests/data/test-pole_metadata.csv"
+        try:
+            self.assertTrue(
+                filecmp.cmp("tests/data/labels.csv", "tests/data/test-labels.csv")
             )
-        )
+            self.assertTrue(
+                filecmp.cmp(
+                    "tests/data/pole_metadata.csv", "tests/data/test-pole_metadata.csv"
+                )
+            )
+        except AssertionError as error:
+            copyfile("tests/data/labels.csv", "tests/data/original-labels.csv")
+            copyfile("tests/data/pole_metadata.csv", "tests/data/original-pole_metadata.csv")
+            raise error
 
     def tearDown(self):
         os.remove("tests/data/labels.csv")

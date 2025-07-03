@@ -114,7 +114,7 @@ def predict(model, path, device, output):  ##
             pred_keypoint[1] = pred_keypoint[1] * (h / 224)
             pred_keypoint[3] = pred_keypoint[3] * (h /224)
 
-            if i % 10 == 0: vis_predicted_keypoints(filename, image, pred_keypoint) 
+            vis_predicted_keypoints(filename, image, pred_keypoint, output)
             x1_pred, y1_pred, x2_pred, y2_pred = pred_keypoint[0], pred_keypoint[1], pred_keypoint[2], pred_keypoint[3]
             
             Cameras.append(Camera)
