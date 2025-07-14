@@ -40,11 +40,6 @@ plt.style.use("./themes/dark.mplstyle")
 with open("config.toml", "rb") as configfile:
     config = tomllib.load(configfile)
 
-# Load config from config.toml
-with open("config.toml", "rb") as configfile:
-    config = tomllib.load(configfile)
-
-
 
 # Define a function to sample every third photo
 ## Only used for experiments
