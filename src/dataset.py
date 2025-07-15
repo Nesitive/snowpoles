@@ -147,7 +147,8 @@ class snowPoleDataset(Dataset):
         filename = self.data.iloc[index]["filename"]
 
         if self.filtered:
-            filtered_name = filter.apply_filter(parents[filename])
+            filterer = filter.ImageFilterer(parents[filename])
+            filterer.apply_filter()
 
         image = cv2.imread(parents[self.data.iloc[index]["filename"]])
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -179,7 +180,7 @@ class snowPoleDataset(Dataset):
             utils.vis_keypoints(transformed["image"], transformed["keypoints"])
 
         if self.filtered:
-            os.remove(filtered_name)
+            os.remove(filterer.savename)
 
         return {
             "image": torch.tensor(image, dtype=torch.float),
