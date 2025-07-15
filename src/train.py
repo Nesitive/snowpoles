@@ -35,16 +35,19 @@ def main():
         "--output", required=False, help="directory in which to store trained models"
     )
     parser.add_argument(
-        "--epochs", required=False, help="epochs"
+        "--epochs", required=False, help="number of epochs"
     )
     parser.add_argument(
-        "--lr", required=False, help="please let us know what this setting does; we've been afraid to try it"
+        "--lr", required=False, help="learning rate"
     )
     parser.add_argument(
-        "--aug", required=False, help="AAAAAUG!"
+        "--aug", required=False, help="augment data", action="store_true"
     )
     parser.add_argument(
         "--batch_size", required=False, help="number of images to train on at once"
+    )
+    parser.add_argument(
+        "--filter", required=False, help="filter incoming images before processing", action="store_true"
     )
     parser.add_argument(
         "--no_confirm", required=False, help="skip confirmation", action="store_true"
@@ -70,6 +73,8 @@ def main():
         args.aug = config["training"]["aug"]
     if not args.batch_size:
         args.batch_size = config["training"]["batch_size"]
+    if not args.filtered:
+        args.filtered = config["training"]["filtered"]
 
     # Confirmation
     if not args.no_confirm:
@@ -120,6 +125,7 @@ def main():
                 + "\n"
             )
         print("LR:\n" + str(args.lr) + "\n")
+        print("Filtered:\n" + str(args.filtered) + "\n")
         print("Epochs:\n" + str(args.epochs) + "\n")
         confirmation = str(input("\nIs this OK? (y/n) "))
         if confirmation.lower() != "y":
@@ -132,9 +138,9 @@ def main():
             else:
                 print("Invalid input.\n")
             quit()
-    train(args.output, args.device, args.model, args.lr, args.epochs, args.path, args.aug, args.batch_size)
+    train(args.output, args.device, args.model, args.lr, args.epochs, args.path, args.aug, args.batch_size, args.filtered)
 
-def train(output, device, model_arg, lr, epochs, input_images, aug, batch_size):
+def train(output, device, model_arg, lr, epochs, input_images, aug, batch_size, filtered):
     # Import all libraries
     import torch
     import torch.optim as optim
@@ -173,7 +179,7 @@ def train(output, device, model_arg, lr, epochs, input_images, aug, batch_size):
     optimizer = optim.Adam(model.parameters(), lr=lr)
     criterion = nn.SmoothL1Loss()
 
-    prepared_dataset = prepare_dataset(input_images, aug, batch_size, output)
+    prepared_dataset = prepare_dataset(input_images, aug, batch_size, filtered, output)
     train_loader = prepared_dataset["train_loader"]
     train_data = prepared_dataset["train_data"]
     valid_loader = prepared_dataset["valid_loader"]
