@@ -187,7 +187,7 @@ class snowPoleDataset(Dataset):
             "filename": filename,
         }
 
-def prepare_dataset(input_images, aug, batch_size, models_output, filtered):
+def prepare_dataset(input_images, aug, batch_size, filtered, models_output):
     # get the training and validation data samples
     training_samples, valid_samples = train_test_split(
         f"{input_images}/labels.csv", input_images, models_output
