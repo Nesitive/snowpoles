@@ -32,6 +32,7 @@ from torchvision.transforms import Compose, Resize, ToTensor
 from sklearn.model_selection import train_test_split
 import os
 from pathlib import Path
+import filter
 
 # Comment out this line to disable dark mode
 plt.style.use("./themes/dark.mplstyle")
@@ -90,10 +91,11 @@ def train_test_split(csv_path, image_path, models_output):
 
 class snowPoleDataset(Dataset):
 
-    def __init__(self, samples, path, aug):  # split='train'):
+    def __init__(self, samples, path, aug, filtered=False):  # split='train'):
         self.data = samples
         self.path = path
         self.resize = 224
+        self.filtered = filtered
 
         if aug == False:
             self.transform = A.Compose(
@@ -144,6 +146,9 @@ class snowPoleDataset(Dataset):
         ]  ## may need to update this. *Yeah, you think?* -Nesitive
         filename = self.data.iloc[index]["filename"]
 
+        if self.filtered:
+            filtered_name = filter.apply_filter(parents[filename])
+
         image = cv2.imread(parents[self.data.iloc[index]["filename"]])
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         orig_h, orig_w, channel = image.shape
@@ -173,6 +178,9 @@ class snowPoleDataset(Dataset):
         if len(keypoints) != 2:
             utils.vis_keypoints(transformed["image"], transformed["keypoints"])
 
+        if self.filtered:
+            os.remove(filtered_name)
+
         return {
             "image": torch.tensor(image, dtype=torch.float),
             "keypoints": torch.tensor(keypoints, dtype=torch.float),
@@ -189,11 +197,11 @@ def prepare_dataset(input_images, aug, batch_size, models_output):
     train_data = snowPoleDataset(
         training_samples,
         f"{input_images}",
-        aug=aug,
+        aug=aug, filtered=True
     )  ## we want all folders
 
     valid_data = snowPoleDataset(
-        valid_samples, f"{input_images}", aug=False
+        valid_samples, f"{input_images}", aug=False, filtered=True
     )  # we always want the transform to be the normal transform
 
     # prepare data loaders
