@@ -47,7 +47,7 @@ def main():
         "--batch_size", required=False, help="number of images to train on at once"
     )
     parser.add_argument(
-        "--filter", required=False, help="filter incoming images before processing", action="store_true"
+        "--filtered", required=False, help="filter incoming images before processing", action="store_true"
     )
     parser.add_argument(
         "--no_confirm", required=False, help="skip confirmation", action="store_true"
