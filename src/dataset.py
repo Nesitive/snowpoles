@@ -187,7 +187,7 @@ class snowPoleDataset(Dataset):
             "filename": filename,
         }
 
-def prepare_dataset(input_images, aug, batch_size, models_output):
+def prepare_dataset(input_images, aug, batch_size, models_output, filtered):
     # get the training and validation data samples
     training_samples, valid_samples = train_test_split(
         f"{input_images}/labels.csv", input_images, models_output
@@ -197,11 +197,11 @@ def prepare_dataset(input_images, aug, batch_size, models_output):
     train_data = snowPoleDataset(
         training_samples,
         f"{input_images}",
-        aug=aug, filtered=True
+        aug=aug, filtered=filtered
     )  ## we want all folders
 
     valid_data = snowPoleDataset(
-        valid_samples, f"{input_images}", aug=False, filtered=True
+        valid_samples, f"{input_images}", aug=False, filtered=filtered
     )  # we always want the transform to be the normal transform
 
     # prepare data loaders

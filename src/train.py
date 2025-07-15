@@ -179,7 +179,7 @@ def train(output, device, model_arg, lr, epochs, input_images, aug, batch_size, 
     optimizer = optim.Adam(model.parameters(), lr=lr)
     criterion = nn.SmoothL1Loss()
 
-    prepared_dataset = prepare_dataset(input_images, aug, batch_size, filtered, output)
+    prepared_dataset = prepare_dataset(input_images, aug, batch_size, filtered, output, filtered)
     train_loader = prepared_dataset["train_loader"]
     train_data = prepared_dataset["train_data"]
     valid_loader = prepared_dataset["valid_loader"]
