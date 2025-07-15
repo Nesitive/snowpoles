@@ -25,14 +25,13 @@ import matplotlib.pyplot as plt
 import glob
 import torch
 import torchvision.transforms as T
-from PIL import Image
 from PIL import Image, ImageFile
 import albumentations as A  ### better for keypoint augmentations, pip install albumentations
 from torchvision.transforms import Compose, Resize, ToTensor
 from sklearn.model_selection import train_test_split
 import os
 from pathlib import Path
-import filter
+import colorsys
 
 # Comment out this line to disable dark mode
 plt.style.use("./themes/dark.mplstyle")
@@ -146,17 +145,28 @@ class snowPoleDataset(Dataset):
         ]  ## may need to update this. *Yeah, you think?* -Nesitive
         filename = self.data.iloc[index]["filename"]
 
-        if self.filtered:
-            filterer = filter.ImageFilterer(parents[filename])
-            filterer.apply_filter()
-
         image = cv2.imread(parents[self.data.iloc[index]["filename"]])
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         orig_h, orig_w, channel = image.shape
 
         # resize the image into `resize` defined above
         image = cv2.resize(image, (self.resize, self.resize))
-        image = image / 255.0
+
+        if self.filtered:
+            # Apply filter
+            image_width, image_height, _ = image.shape
+            for y in range(image_height):
+                for x in range(image_width):
+                    pixel = list(colorsys.rgb_to_hsv(*image[x, y]))
+                    if (pixel[0] < 0.833):
+                        image[x, y] = (0, 0, 0)
+                        continue
+                    pixel[1] = 1
+                    pixel[2] = 255
+                    rgb = colorsys.hsv_to_rgb(*pixel)
+                    image[x, y] = (round(rgb[0]), round(rgb[1]), round(rgb[2]))
+            cv2.imwrite("test.jpg", image)
+
         # get the keypoints
         keypoints = self.data.iloc[index][1:][
             ["x1", "y1", "x2", "y2"]
@@ -178,9 +188,6 @@ class snowPoleDataset(Dataset):
 
         if len(keypoints) != 2:
             utils.vis_keypoints(transformed["image"], transformed["keypoints"])
-
-        if self.filtered:
-            os.remove(filterer.savename)
 
         return {
             "image": torch.tensor(image, dtype=torch.float),

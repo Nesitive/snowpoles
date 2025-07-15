@@ -17,9 +17,9 @@ subset_to_label = 10 # Label every N images
 
 [training]
 lr = 0.0001 # Learning Rate 
-epochs = 1 # Epochs
+epochs = 10 # Epochs
 aug = true # Whether to augment the data
 device = "cpu" # Device to use, either "cuda" or "cpu".
 batch_size = 2 # Batch size
 show_dataset_plot = false # Show dataset plot
-filtered = true # Whether to apply filter to images
+filtered = false # Whether to apply filter to images
