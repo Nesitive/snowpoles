@@ -1,3 +1,5 @@
+# This is Filter Dot Pie, not Filter Dot Pee Why. My code, my rules.
+
 import colorsys
 import os
 import multiprocessing
@@ -46,38 +48,3 @@ def apply_filter_thread(core, cores):
             pixel[2] = 255
             rgb = colorsys.hsv_to_rgb(*pixel)
             image[x, y] = (round(rgb[0]), round(rgb[1]), round(rgb[2]))
-
-
-def main():
-    paths = list(Path(IMAGES_DIR).rglob("*.JPG"))
-    files = []
-    for path in paths:
-        files += [str(path)[len(IMAGES_DIR) + 1 :]]
-    for file in files:
-        Path(FILTERED_DIR + "/" + file).parents[0].mkdir(parents=True, exist_ok=True)
-    # Multiprocessing
-    processes = []
-    cores = os.cpu_count()
-    for core, filename in enumerate(files):
-        processes += [
-            multiprocessing.Process(
-                target=apply_filter, args=(filename, )
-            )
-        ]
-
-    si = 0
-    for i, process in enumerate(processes):
-        if i != 0 and (i % cores == 0 or i == len(processes) - 1):
-            if i == len(processes) - 1:
-                ei = i + 1
-            else:
-                ei = i
-            for j in range(si, ei):
-                print("Processing", processes[j]._args[0])
-                processes[j].start()
-            for j in range(si, ei):
-                processes[j].join()
-            si = i
-
-if (__name__ == "__main__"):
-    main()
