@@ -87,6 +87,21 @@ def train_test_split(csv_path, image_path, models_output):
 
     return training_samples, valid_samples
 
+def apply_filter(image):
+    # Apply filter
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    image_width, image_height, _ = image.shape
+    for y in range(image_height):
+        for x in range(image_width):
+            pixel = list(colorsys.rgb_to_hsv(*image[x, y]))
+            if (pixel[0] < 0.833):
+                image[x, y] = (0, 0, 0)
+                continue
+            pixel[1] = 1
+            pixel[2] = 255
+            rgb = colorsys.hsv_to_rgb(*pixel)
+            image[x, y] = (round(rgb[0]), round(rgb[1]), round(rgb[2]))
+    return image
 
 class snowPoleDataset(Dataset):
 
@@ -146,26 +161,13 @@ class snowPoleDataset(Dataset):
         filename = self.data.iloc[index]["filename"]
 
         image = cv2.imread(parents[self.data.iloc[index]["filename"]])
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         orig_h, orig_w, channel = image.shape
 
         # resize the image into `resize` defined above
         image = cv2.resize(image, (self.resize, self.resize))
 
         if self.filtered:
-            # Apply filter
-            image_width, image_height, _ = image.shape
-            for y in range(image_height):
-                for x in range(image_width):
-                    pixel = list(colorsys.rgb_to_hsv(*image[x, y]))
-                    if (pixel[0] < 0.833):
-                        image[x, y] = (0, 0, 0)
-                        continue
-                    pixel[1] = 1
-                    pixel[2] = 255
-                    rgb = colorsys.hsv_to_rgb(*pixel)
-                    image[x, y] = (round(rgb[0]), round(rgb[1]), round(rgb[2]))
-            cv2.imwrite("test.jpg", image)
+            image = apply_filter(image)
 
         # get the keypoints
         keypoints = self.data.iloc[index][1:][
