@@ -222,6 +222,10 @@ def train(output, device, model_arg, lr, epochs, input_images, aug, batch_size, 
 
     # loss plots
     plt.figure(figsize=(10, 7))
+    with open(f"{output}/loss.csv", "a") as outfile:
+        outfile.write("Epochs,Train Loss,Validation Loss")
+        for i in range(len(train_loss)):
+            outfile.write(f"\n{i + 1},{train_loss[i]},{val_loss[i]}")
     plt.plot(train_loss, color='orange', label='train loss')
     plt.plot(val_loss, color='red', label='validataion loss')
     plt.xlabel('Epochs')
