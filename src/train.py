@@ -244,7 +244,7 @@ def train(output, device, model_arg, lr, epochs, input_images, aug, batch_size, 
             "optimizer_state_dict": optimizer.state_dict(),
             "loss": criterion,
         },
-        f"{output}/model.pth",
+        f"{output}/model_last.pth",
     )  ### the last model
     print("DONE TRAINING")
     # print("My program took", time.time() - start_time, "to run")
