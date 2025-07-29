@@ -47,7 +47,7 @@ def main():
         "--batch_size", required=False, help="number of images to train on at once"
     )
     parser.add_argument(
-        "--filtered", required=False, help="filter incoming images before processing", action="store_true"
+        "--filtered", required=False, help="filter out hues below this level (0-1)"
     )
     parser.add_argument(
         "--no_confirm", required=False, help="skip confirmation", action="store_true"
@@ -75,6 +75,8 @@ def main():
         args.batch_size = config["training"]["batch_size"]
     if not args.filtered:
         args.filtered = config["training"]["filtered"]
+    args.epochs = int(args.epochs)
+    args.filtered = float(args.filtered)
 
     # Confirmation
     if not args.no_confirm:
@@ -201,8 +203,11 @@ def train(output, device, model_arg, lr, epochs, input_images, aug, batch_size, 
         val_loss.append(val_epoch_loss)
         print(f"Train Loss: {train_epoch_loss:.4f}")
         print(f'Val Loss: {val_epoch_loss:.4f}')
-        ####### saving model every 50 epochs
-        if (epoch % 50) == 0:
+
+        # Save model if its validation loss is the lowest
+        if val_epoch_loss < best_loss_val:
+            best_loss_val = val_epoch_loss
+            best_loss_val_epoch = epoch
             torch.save(
                 {
                     "epoch": epochs,
@@ -210,15 +215,14 @@ def train(output, device, model_arg, lr, epochs, input_images, aug, batch_size, 
                     "optimizer_state_dict": optimizer.state_dict(),
                     "loss": criterion,
                 },
-                f"{output}/model_epoch{epoch}.pth",
+                f"{output}/model_best.pth.new",
             )
-
-        ####### early stopping #########
-        if val_epoch_loss < best_loss_val:
-                    best_loss_val = val_epoch_loss
-                    best_loss_val_epoch = epoch
+            if os.path.exists(f"{output}/model_best.pth"):
+                os.remove(f"{output}/model_best.pth")
+            os.rename(f"{output}/model_best.pth.new", f"{output}/model_best.pth")
         elif epoch > best_loss_val_epoch + 10:
-                break
+            # Early stopping
+            break
 
     # loss plots
     plt.figure(figsize=(10, 7))

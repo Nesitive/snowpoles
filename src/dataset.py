@@ -87,14 +87,14 @@ def train_test_split(csv_path, image_path, models_output):
 
     return training_samples, valid_samples
 
-def apply_filter(image):
+def apply_filter(image, strength):
     # Apply filter
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image_width, image_height, _ = image.shape
     for y in range(image_height):
         for x in range(image_width):
             pixel = list(colorsys.rgb_to_hsv(*image[x, y]))
-            if (pixel[0] < 0.833):
+            if (pixel[0] < strength):
                 image[x, y] = (0, 0, 0)
                 continue
             pixel[1] = 1
@@ -105,7 +105,7 @@ def apply_filter(image):
 
 class snowPoleDataset(Dataset):
 
-    def __init__(self, samples, path, aug, filtered=False):  # split='train'):
+    def __init__(self, samples, path, aug, filtered=0):  # split='train'):
         self.data = samples
         self.path = path
         self.resize = 224
@@ -167,7 +167,7 @@ class snowPoleDataset(Dataset):
         image = cv2.resize(image, (self.resize, self.resize))
 
         if self.filtered:
-            image = apply_filter(image)
+            image = apply_filter(image, self.filtered)
 
         # get the keypoints
         keypoints = self.data.iloc[index][1:][

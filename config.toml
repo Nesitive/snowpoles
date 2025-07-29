@@ -3,7 +3,7 @@
 
 
 [paths]
-input_images = "/home/beau/Programs/SnowEx/Snow Station Photos (BigW)/Current/2023-2024"
+input_images = "/home/beau/Programs/SnowEx/Snow Station Photos 2023-2024"
 images_output = "/home/beau/Programs/SnowEx/snowpoles/processed"
 trainee_model = "/home/beau/Programs/SnowEx/snowpoles/models/trainee_model.pth"
 trained_model = "/home/beau/Programs/SnowEx/snowpoles/models/trained/model.pth"
@@ -17,9 +17,9 @@ subset_to_label = 10 # Label every N images
 
 [training]
 lr = 0.0001 # Learning Rate 
-epochs = 10 # Epochs
+epochs = 20 # Epochs
 aug = true # Whether to augment the data
 device = "cpu" # Device to use, either "cuda" or "cpu".
 batch_size = 2 # Batch size
 show_dataset_plot = false # Show dataset plot
-filtered = false # Whether to apply filter to images
+filtered = 0 # Whether to apply filter to images
