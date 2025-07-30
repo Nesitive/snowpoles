@@ -3,10 +3,10 @@
 
 
 [paths]
-input_images = "/home/beau/Programs/SnowEx/Snow Station Photos 2023-2024"
-images_output = "/home/beau/Programs/SnowEx/snowpoles/processed"
+input_images = "/home/beau/Programs/SnowEx/Images/2022-2023"
+images_output = "/home/beau/Programs/SnowEx/Images/2022-2023 Processed"
 trainee_model = "/home/beau/Programs/SnowEx/snowpoles/models/trainee_model.pth"
-trained_model = "/home/beau/Programs/SnowEx/snowpoles/models/trained/model.pth"
+trained_model = "/home/beau/Programs/SnowEx/Models/Normal/model_best.pth"
 models_output = "/home/beau/Programs/SnowEx/snowpoles/models/normal"
 
 

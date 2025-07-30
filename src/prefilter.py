@@ -8,7 +8,7 @@ def apply_filter(imagefile, image):
 	for y in range(imagefile.height):
 		for x in range(imagefile.width):
 			pixel = list(colorsys.rgb_to_hsv(*image[x, y]))
-			if (pixel[0] < 0.958 and pixel[0] > 0.042):
+			if (pixel[0] < 0.925):
 				image[x, y] = (0, 0, 0)
 				continue
 			pixel[1] = 1
@@ -24,7 +24,7 @@ def filter_list(imagepaths, progress):
 		image = imagefile.load()
 		apply_filter(imagefile, image)
 		outfile = str(file).replace("\\", "/").split("/")
-		outfile[1] = "Snow Station Photos 2023-2024 Filtered"
+		outfile[1] = "Images/2022-2023 Filtered"
 		if not os.path.exists("/".join(outfile[:-1])):
 			os.makedirs("/".join(outfile[:-1]))
 		imagefile.save("/".join(outfile))
@@ -33,7 +33,7 @@ def filter_list(imagepaths, progress):
 
 def main():
 	progress = Value("i", 0)
-	imagepaths = list(Path("../Snow Station Photos 2023-2024").rglob("*.JPG"))
+	imagepaths = list(Path("../Images/2022-2023").rglob("*.JPG"))
 
 	global total
 	total = len(imagepaths)
