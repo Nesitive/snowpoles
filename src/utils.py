@@ -26,7 +26,7 @@ def valid_keypoints_plot(image, outputs, orig_keypoints, epoch, output_path):
     img = image[0]  ## something snow in it ## halfway throught the dataset
     output_keypoint = outputs[0]
     orig_keypoint = orig_keypoints[0]
-    img = np.array(img, dtype='float32')
+    img = np.array(img, dtype='uint8')
     img = np.transpose(img, (1, 2, 0))
     plt.imshow(img)
     
